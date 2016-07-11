@@ -2,13 +2,15 @@
 
 module Main where
 
-import           Data.ByteString
+import qualified Configuration.Dotenv  as D
+import qualified Data.ByteString.Char8 as B
 import           Data.Time.Clock
 import           Network.HTTP.Client
 import           Network.HTTP.Conduit
 import           Network.HTTP.Simple
+import           System.Environment
 
-buildAuthRequest :: ByteString -> ByteString -> IO Request
+buildAuthRequest :: B.ByteString -> B.ByteString -> IO Request
 buildAuthRequest username password = do
   authRequest <- parseRequest "POST https://academic.ui.ac.id/main/Authentication/Index"
   return (setRequestSecure True
@@ -21,8 +23,13 @@ buildChangeRoleRequest = do
 
 getAuthenticationCookieJar :: IO CookieJar
 getAuthenticationCookieJar = do
+  username <- getEnv "SIAK_USERNAME"
+  password <- getEnv "SIAK_PASSWORD"
+
+  putStrLn $ "Authenticating with credentials of " ++ username ++ "..."
+
   -- Make authentication request
-  authRequest <- buildAuthRequest "widyanto.bagus" "lala123"
+  authRequest <- buildAuthRequest (B.pack username) (B.pack password)
   authResponse <- httpLBS authRequest
 
   -- Create cookie jar with authentication cookies from auth request
@@ -38,6 +45,9 @@ getAuthenticationCookieJar = do
 
 main :: IO ()
 main = do
+  -- Load environment variables
+  D.loadFile False ".env"
+
   -- At this point, we have successfully authenticated.
   -- Use authenticationCookieJar for further requests.
   authenticationCookieJar <- getAuthenticationCookieJar
