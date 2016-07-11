@@ -48,7 +48,8 @@ main = do
   -- Load environment variables
   D.loadFile False ".env"
 
+  authenticationCookieJar <- getAuthenticationCookieJar
+
   -- At this point, we have successfully authenticated.
   -- Use authenticationCookieJar for further requests.
-  authenticationCookieJar <- getAuthenticationCookieJar
   print authenticationCookieJar
