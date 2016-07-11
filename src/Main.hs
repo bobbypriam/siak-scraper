@@ -19,9 +19,8 @@ buildChangeRoleRequest = do
   changeRoleRequest <- parseRequest "GET https://academic.ui.ac.id/main/Authentication/ChangeRole"
   return (setRequestSecure True changeRoleRequest)
 
-
-main :: IO ()
-main = do
+getAuthenticationCookieJar :: IO CookieJar
+getAuthenticationCookieJar = do
   -- Make authentication request
   authRequest <- buildAuthRequest "widyanto.bagus" "lala123"
   authResponse <- httpLBS authRequest
@@ -35,8 +34,11 @@ main = do
   changeRoleRequest <- buildChangeRoleRequest
   changeRoleResp <- httpLBS (changeRoleRequest { cookieJar = Just authenticationCookieJar })
 
+  return authenticationCookieJar
+
+main :: IO ()
+main = do
   -- At this point, we have successfully authenticated.
   -- Use authenticationCookieJar for further requests.
-  print (getResponseHeaders changeRoleResp)
-  print (getResponseBody changeRoleResp)
+  authenticationCookieJar <- getAuthenticationCookieJar
   print authenticationCookieJar
