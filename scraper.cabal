@@ -21,3 +21,5 @@ executable scraper
                      , http-client
                      , time
                      , bytestring
+                     , dotenv
+
