@@ -3,7 +3,7 @@ module Main where
 import           Configuration.Dotenv (loadFile)
 import           System.Environment   (getEnv)
 
-import           Auth                 (getAuthenticationCookieJar)
+import           Auth                 (authenticate)
 
 main :: IO ()
 main = do
@@ -14,7 +14,7 @@ main = do
 
   putStrLn $ "Authenticating with credentials of " ++ username ++ "..."
 
-  authenticationCookieJar <- getAuthenticationCookieJar username password
+  authenticationCookieJar <- authenticate username password
 
   -- At this point, we have successfully authenticated.
   -- Use authenticationCookieJar for further requests.

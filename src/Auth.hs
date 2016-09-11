@@ -22,8 +22,8 @@ buildChangeRoleRequest = do
   changeRoleRequest <- parseRequest $ "GET " ++ changeRoleUrl
   return (setRequestSecure True changeRoleRequest)
 
-getAuthenticationCookieJar :: String -> String -> IO CookieJar
-getAuthenticationCookieJar username password = do
+authenticate :: String -> String -> IO CookieJar
+authenticate username password = do
   -- Make authentication request
   authRequest <- buildAuthRequest username password
   authResponse <- httpLBS authRequest
