@@ -22,3 +22,4 @@ executable scraper
                      , time >= 1.5 && < 2
                      , bytestring >= 0.10
                      , dotenv >= 0.3
+                     , directory >= 1.2 && < 2

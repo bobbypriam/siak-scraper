@@ -1,13 +1,18 @@
 module Main where
 
 import           Configuration.Dotenv (loadFile)
+import           System.Directory     (doesFileExist)
 import           System.Environment   (getArgs, getEnv)
 
 import           Auth                 (authenticate)
 
 main :: IO ()
 main = do
-  -- TODO: check if .env exist, fail if it doesn't
+  envExists <- doesFileExist ".env"
+
+  if envExists
+    then putStrLn "Reading configuration from .env"
+    else error "No .env file found! Use the provided .env"
 
   -- Load environment variables
   loadFile False ".env"
