@@ -10,28 +10,22 @@ import           Network.HTTP.Conduit  (CookieJar, Request, cookieJar,
                                         createCookieJar)
 import           Network.HTTP.Simple   (httpLBS, setRequestBodyURLEncoded,
                                         setRequestSecure)
-import           System.Environment    (getEnv)
 
-buildAuthRequest :: ByteString -> ByteString -> IO Request
+buildAuthRequest :: String -> String -> IO Request
 buildAuthRequest username password = do
   authRequest <- parseRequest $ "POST " ++ authenticationUrl
   return (setRequestSecure True
-    $ setRequestBodyURLEncoded [("u", username), ("p", password)] authRequest)
+    $ setRequestBodyURLEncoded [("u", pack username), ("p", pack password)] authRequest)
 
 buildChangeRoleRequest :: IO Request
 buildChangeRoleRequest = do
   changeRoleRequest <- parseRequest $ "GET " ++ changeRoleUrl
   return (setRequestSecure True changeRoleRequest)
 
-getAuthenticationCookieJar :: IO CookieJar
-getAuthenticationCookieJar = do
-  username <- getEnv "SIAK_USERNAME"
-  password <- getEnv "SIAK_PASSWORD"
-
-  putStrLn $ "Authenticating with credentials of " ++ username ++ "..."
-
+getAuthenticationCookieJar :: String -> String -> IO CookieJar
+getAuthenticationCookieJar username password = do
   -- Make authentication request
-  authRequest <- buildAuthRequest (pack username) (pack password)
+  authRequest <- buildAuthRequest username password
   authResponse <- httpLBS authRequest
 
   -- Create cookie jar with authentication cookies from auth request
