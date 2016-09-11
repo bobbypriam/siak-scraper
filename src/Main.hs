@@ -11,11 +11,16 @@ main = do
   envExists <- doesFileExist ".env"
 
   if envExists
-    then putStrLn "Reading configuration from .env"
-    else error "No .env file found! Use the provided .env"
+    then putStrLn ".env file exists. Using it as config file."
+    else error "No .env file found! Use the provided .env.example for pointers."
 
   -- Load environment variables
   loadFile False ".env"
+
+  username <- getEnv "SIAK_USERNAME"
+  password <- getEnv "SIAK_PASSWORD"
+
+  putStrLn $ "Using credentials of " ++ username ++ "."
 
   args <- getArgs
 
@@ -23,32 +28,30 @@ main = do
     then do
       printHelp
       error "No command given."
-    else do
-      let command = head args
+    else putStrLn "Parsing command..."
 
-      if not (isValidCommand command)
-        then do
-          printHelp
-          error $ "Invalid command: " ++ command
-        else do
-          putStrLn $ "Running " ++ command ++ " command."
+  let command = head args
 
-          username <- getEnv "SIAK_USERNAME"
-          password <- getEnv "SIAK_PASSWORD"
+  if not (isValidCommand command)
+    then do
+      printHelp
+      error $ "Invalid command: " ++ command
+    else
+      putStrLn $ "Running " ++ command ++ " command."
 
-          putStrLn $ "Authenticating with credentials of " ++ username ++ "..."
+  putStrLn "Authenticating..."
 
-          authenticationCookieJar <- authenticate username password
+  authenticationCookieJar <- authenticate username password
 
-          -- At this point, we have successfully authenticated.
-          -- Use authenticationCookieJar for further requests.
-          case command of
-            "summary" ->
-              error "TODO: summary"
-            "grades" ->
-              error "TODO: grades"
-            "fees" ->
-              error "TODO: fees"
+  -- At this point, we have successfully authenticated.
+  -- Use authenticationCookieJar for further requests.
+  case command of
+    "summary" ->
+      error "TODO: summary"
+    "grades" ->
+      error "TODO: grades"
+    "fees" ->
+      error "TODO: fees"
 
 isValidCommand :: String -> Bool
 isValidCommand command
