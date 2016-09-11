@@ -4,12 +4,13 @@ module Auth where
 
 import           Data.ByteString.Char8 (ByteString, pack)
 import           Data.Time.Clock       (getCurrentTime)
-import           Endpoints             (authenticationUrl, changeRoleUrl)
 import           Network.HTTP.Client   (parseRequest, updateCookieJar)
 import           Network.HTTP.Conduit  (CookieJar, Request, cookieJar,
                                         createCookieJar)
 import           Network.HTTP.Simple   (httpLBS, setRequestBodyURLEncoded,
                                         setRequestSecure)
+
+import           Endpoints             (authenticationUrl, changeRoleUrl)
 
 buildAuthRequest :: String -> String -> IO Request
 buildAuthRequest username password = do
