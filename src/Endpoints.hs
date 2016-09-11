@@ -10,3 +10,6 @@ authenticationUrl = baseUrl ++ "/Authentication/Index"
 
 changeRoleUrl :: Url
 changeRoleUrl = baseUrl ++ "/Authentication/ChangeRole"
+
+summaryUrl :: Url
+summaryUrl = baseUrl ++ "/Academic/Summary"

@@ -5,6 +5,7 @@ import           System.Directory     (doesFileExist)
 import           System.Environment   (getArgs, getEnv)
 
 import           Auth                 (authenticate)
+import           Commands             (showSummary)
 
 main :: IO ()
 main = do
@@ -47,7 +48,7 @@ main = do
   -- Use authenticationCookieJar for further requests.
   case command of
     "summary" ->
-      error "TODO: summary"
+      showSummary authenticationCookieJar
     "grades" ->
       error "TODO: grades"
     "fees" ->
