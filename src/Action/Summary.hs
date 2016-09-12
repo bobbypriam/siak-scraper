@@ -1,18 +1,18 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Commands where
+module Action.Summary (showSummary) where
 
-import qualified Data.ByteString.Lazy as B
+import qualified Data.ByteString.Lazy       as B
 import qualified Data.ByteString.Lazy.Char8 as B8
-import Data.Char
-import           Network.HTTP.Client           (parseRequest, Request)
-import           Network.HTTP.Conduit          (CookieJar, cookieJar)
-import           Network.HTTP.Simple           (getResponseBody, httpLBS,
-                                                setRequestBodyURLEncoded,
-                                                setRequestSecure)
+import           Data.Char
+import           Network.HTTP.Client        (Request, parseRequest)
+import           Network.HTTP.Conduit       (CookieJar, cookieJar)
+import           Network.HTTP.Simple        (getResponseBody, httpLBS,
+                                             setRequestBodyURLEncoded,
+                                             setRequestSecure)
 import           Text.HTML.TagSoup
 
-import           Endpoints                     (summaryUrl)
+import           Endpoints                  (summaryUrl)
 
 type Key = B.ByteString
 type Value = B.ByteString

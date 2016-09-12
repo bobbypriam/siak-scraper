@@ -4,8 +4,8 @@ import           Configuration.Dotenv (loadFile)
 import           System.Directory     (doesFileExist)
 import           System.Environment   (getArgs, getEnv)
 
+import           Action.Summary       (showSummary)
 import           Auth                 (authenticate)
-import           Commands             (showSummary)
 
 main :: IO ()
 main = do
