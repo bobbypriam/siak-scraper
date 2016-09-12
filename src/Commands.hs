@@ -59,9 +59,18 @@ parseSummary html =
 
 showSummary :: CookieJar -> IO ()
 showSummary authenticationCookieJar = do
+  putStrLn "Fetching summary..."
+
   request <- buildSummaryRequest
   response <- httpLBS $ request { cookieJar = Just authenticationCookieJar }
-  let responseBody = getResponseBody response
 
+  putStrLn "Fetched summary."
+
+  let responseBody = getResponseBody response
   let entries = parseSummary responseBody
+
+  putStrLn ""
+  putStrLn ""
+  putStrLn "======== Summary ========"
   printEntries entries
+  putStrLn "========   End   ========"

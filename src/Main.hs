@@ -44,6 +44,8 @@ main = do
 
   authenticationCookieJar <- authenticate username password
 
+  putStrLn "Done authenticationg."
+
   -- At this point, we have successfully authenticated.
   -- Use authenticationCookieJar for further requests.
   case command of
