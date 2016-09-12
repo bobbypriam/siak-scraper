@@ -23,3 +23,5 @@ executable scraper
                      , bytestring >= 0.10
                      , dotenv >= 0.3
                      , directory >= 1.2 && < 2
+                     , tagsoup >= 0.13
+                     , text >= 1.2
