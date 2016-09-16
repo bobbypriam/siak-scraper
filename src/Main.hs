@@ -1,6 +1,7 @@
 module Main where
 
 import           Configuration.Dotenv (loadFile)
+import           Control.Monad        (unless, when)
 import           System.Directory     (doesFileExist)
 import           System.Environment   (getArgs, getEnv)
 
@@ -25,20 +26,15 @@ main = do
 
   args <- getArgs
 
-  if null args
-    then do
-      printHelp
-      error "No command given."
-    else putStrLn "Parsing command..."
+  when (null args) $
+    do printHelp
+       error "No command given."
 
   let command = head args
 
-  if not (isValidCommand command)
-    then do
-      printHelp
-      error $ "Invalid command: " ++ command
-    else
-      putStrLn $ "Running " ++ command ++ " command."
+  unless (isValidCommand command) $
+    do printHelp
+       error $ "Invalid command: " ++ command
 
   putStrLn "Authenticating..."
 
