@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Auth where
+module Auth (authenticate, isAuthenticationSuccess) where
 
 import           Data.ByteString.Char8 (ByteString, pack)
 import           Data.Time.Clock       (getCurrentTime)
-import           Network.HTTP.Client   (parseRequest, updateCookieJar)
-import           Network.HTTP.Conduit  (CookieJar, Request, cookieJar,
+import           Network.HTTP.Client   (parseRequest, updateCookieJar, destroyCookieJar)
+import           Network.HTTP.Conduit  (CookieJar, Request, Cookie(..), cookieJar,
                                         createCookieJar)
 import           Network.HTTP.Simple   (httpLBS, setRequestBodyURLEncoded,
                                         setRequestSecure)
@@ -39,3 +39,7 @@ authenticate username password = do
   changeRoleResp <- httpLBS (changeRoleRequest { cookieJar = Just authenticationCookieJar })
 
   return authenticationCookieJar
+
+isAuthenticationSuccess :: CookieJar -> Bool
+isAuthenticationSuccess cookieJar =
+  elem "siakng_cc" $ map cookie_name $ destroyCookieJar cookieJar

@@ -6,7 +6,7 @@ import           System.Directory     (doesFileExist)
 import           System.Environment   (getArgs, getEnv)
 
 import           Action.Summary       (showSummary)
-import           Auth                 (authenticate)
+import           Auth                 (authenticate, isAuthenticationSuccess)
 
 main :: IO ()
 main = do
@@ -40,7 +40,10 @@ main = do
 
   authenticationCookieJar <- authenticate username password
 
-  putStrLn "Authentication done."
+  unless (isAuthenticationSuccess authenticationCookieJar) $
+    error "Authentication failed. Possibly you provided wrong username or password."
+
+  putStrLn "Authentication success."
 
   -- At this point, we have successfully authenticated.
   -- Use authenticationCookieJar for further requests.
