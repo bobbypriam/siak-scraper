@@ -63,7 +63,7 @@ makeEntries [_] = []
 makeEntries (a:b:xs) = Entry a b : makeEntries xs
 
 containsWhitespace :: B.ByteString -> Bool
-containsWhitespace = B.any (== (fromIntegral $ ord '\n'))
+containsWhitespace = B.elem (fromIntegral $ ord '\n')
 
 -- Printing
 
