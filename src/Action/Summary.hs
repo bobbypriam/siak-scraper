@@ -27,14 +27,10 @@ buildSummaryRequest = do
 containsWhitespace :: B.ByteString -> Bool
 containsWhitespace = B.any (== (fromIntegral $ ord '\n'))
 
-makePairs :: [B.ByteString] -> [(B.ByteString, B.ByteString)]
-makePairs [] = []
-makePairs [_] = []
-makePairs (a:b:xs) = (a, b) : makePairs xs
-
-pairsToEntries :: [(B.ByteString, B.ByteString)] -> [Entry]
-pairsToEntries [] = []
-pairsToEntries ((a, b):xs) = Entry a b : pairsToEntries xs
+makeEntries :: [B.ByteString] -> [Entry]
+makeEntries [] = []
+makeEntries [_] = []
+makeEntries (a:b:xs) = Entry a b : makeEntries xs
 
 printEntry :: Entry -> IO ()
 printEntry (Entry key value) =
@@ -48,7 +44,7 @@ printEntries (entry:restOfEntries) = do
 
 parseSummary :: B.ByteString -> [Entry]
 parseSummary html =
-  pairsToEntries $ makePairs withoutWhitespace
+  makeEntries withoutWhitespace
   where
     tags = parseTags html
     summaryTable =
