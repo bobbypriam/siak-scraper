@@ -19,40 +19,6 @@ type Value = B.ByteString
 
 data Entry = Entry Key Value deriving (Show)
 
-buildSummaryRequest :: IO Request
-buildSummaryRequest = do
-  request <- parseRequest $ "GET " ++ summaryUrl
-  return (setRequestSecure True request)
-
-containsWhitespace :: B.ByteString -> Bool
-containsWhitespace = B.any (== (fromIntegral $ ord '\n'))
-
-makeEntries :: [B.ByteString] -> [Entry]
-makeEntries [] = []
-makeEntries [_] = []
-makeEntries (a:b:xs) = Entry a b : makeEntries xs
-
-printEntry :: Entry -> IO ()
-printEntry (Entry key value) =
-  B8.putStrLn $ B.intercalate ": " [key, value]
-
-printEntries :: [Entry] -> IO ()
-printEntries [] = return ()
-printEntries (entry:restOfEntries) = do
-  printEntry entry
-  printEntries restOfEntries
-
-parseSummary :: B.ByteString -> [Entry]
-parseSummary html =
-  makeEntries withoutWhitespace
-  where
-    tags = parseTags html
-    summaryTable =
-          takeWhile (~/= TagComment (" Grafik IP/IPK " :: B.ByteString)) $
-          dropWhile (~/= TagComment (" Summary " :: B.ByteString)) tags
-    texts = map fromTagText $ filter isTagText summaryTable
-    withoutWhitespace = filter (not . containsWhitespace) texts
-
 showSummary :: CookieJar -> IO ()
 showSummary authenticationCookieJar = do
   putStrLn "Fetching summary..."
@@ -70,3 +36,43 @@ showSummary authenticationCookieJar = do
   putStrLn "======== Summary ========"
   printEntries entries
   putStrLn "========   End   ========"
+
+-- Request
+
+buildSummaryRequest :: IO Request
+buildSummaryRequest = do
+  request <- parseRequest $ "GET " ++ summaryUrl
+  return (setRequestSecure True request)
+
+-- Parsing
+
+parseSummary :: B.ByteString -> [Entry]
+parseSummary html =
+  makeEntries withoutWhitespace
+  where
+    tags = parseTags html
+    summaryTable =
+          takeWhile (~/= TagComment (" Grafik IP/IPK " :: B.ByteString)) $
+          dropWhile (~/= TagComment (" Summary " :: B.ByteString)) tags
+    texts = map fromTagText $ filter isTagText summaryTable
+    withoutWhitespace = filter (not . containsWhitespace) texts
+
+makeEntries :: [B.ByteString] -> [Entry]
+makeEntries [] = []
+makeEntries [_] = []
+makeEntries (a:b:xs) = Entry a b : makeEntries xs
+
+containsWhitespace :: B.ByteString -> Bool
+containsWhitespace = B.any (== (fromIntegral $ ord '\n'))
+
+-- Printing
+
+printEntries :: [Entry] -> IO ()
+printEntries [] = return ()
+printEntries (entry:restOfEntries) = do
+  printEntry entry
+  printEntries restOfEntries
+
+printEntry :: Entry -> IO ()
+printEntry (Entry key value) =
+  B8.putStrLn $ B.intercalate ": " [key, value]
